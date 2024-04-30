@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "social_auth",
-    "rest_framework"
+    "rest_framework",
+    "social_co"
 ]
 
 AUTH_USER_MODEL = 'social_auth.Profile'  # Replace with your app and model name
@@ -70,7 +71,7 @@ WSGI_APPLICATION = "social.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "social_db",
+        "NAME": "socialmediadb",
         "USER": "postgres",
         "PASSWORD": "postgres",
         "HOST": "localhost"

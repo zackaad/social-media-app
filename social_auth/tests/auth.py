@@ -17,6 +17,7 @@ class SignUpViewTest(TestCase):
         response = http_response.json()
 
         self.assertDictEqual(response, {
-            'email': 'foo@gmail.com'
+            'email': 'foo@gmail.com',
+            'username': 'OK'
         })
         self.assertEqual(http_response.status_code, 201)

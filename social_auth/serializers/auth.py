@@ -7,7 +7,7 @@ from social_auth.models import Profile
 class ProfileSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True)
-    username = serializers.CharField(write_only=True)
+    username = serializers.CharField(write_only=False)
 
     class Meta:
         model = Profile
