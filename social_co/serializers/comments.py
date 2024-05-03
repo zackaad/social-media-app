@@ -1,19 +1,12 @@
 from rest_framework import serializers
 from social_auth.models import Profile
-from social_auth.serializers.auth import ProfileSerializer
-from social_co.models import Post
-from rest_framework.serializers import CurrentUserDefault
+from social_co.models import Comment, Post
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.PrimaryKeyRelatedField(read_only=True)
-    post = serializers.PrimaryKeyRelatedField(read_only=True)
+    author = serializers.SlugRelatedField(slug_field='pk', queryset=Profile.objects.all())
+    post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
 
     class Meta:
-        model = Post
-        fields = ('id', 'author', 'content', 'post_id')
-
-    def create(self, validated_data):
-        request = self.context['request']
-
-        return Post.objects.create(author=request.user, **validated_data)
+        model = Comment
+        fields = ('id', 'author', 'content', 'post', 'created_at')

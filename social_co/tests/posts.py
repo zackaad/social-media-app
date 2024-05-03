@@ -32,17 +32,21 @@ class PostListViewSetTest(TestCase):
 
     def test_post_creation_successful(self):
         data = {
-            "content": "Test content"
+            "content": "Test content",
+            "post_id": 3,
+            'comments': [],
         }
 
         http_response = self.client.post("/feed/posts/", data=data, format="json")
 
-        self.assertEqual(http_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(http_response.status_code, 201)
 
         response = http_response.json()
 
         self.assertDictEqual(response, {
             'id': response['id'],
-            'content': 'Test content',
             'author': self.user.pk,
+            'content': 'Test content',
+            'comments': [],
+            "created_at": response['created_at']
         })

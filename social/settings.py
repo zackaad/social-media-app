@@ -13,7 +13,7 @@ SECRET_KEY = "django-insecure-06y8uzvh%*o3kesmy7&s54xk6j*bij8be!uh3wtg&=fflvf)4q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -27,9 +27,36 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "social_auth",
     "rest_framework",
-    "social_co"
+    "social_co",
+    "corsheaders"
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'AUTHENTICATION_BACKENDS': [
+        'django.contrib.auth.backends.ModelBackend',
+
+    ]
+
+
+
+}
+
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
+
+CORS_ALLOWED_ALL_ORIGINS = True
 AUTH_USER_MODEL = 'social_auth.Profile'  # Replace with your app and model name
 
 
@@ -41,6 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = "social.urls"

@@ -9,11 +9,11 @@ from social_co.serializers.comments import CommentSerializer
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(read_only=True)
-    comments = CommentSerializer(many=True)
+    comments = CommentSerializer(source='comment_set', many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ('id', 'author', 'content', 'comments.py')
+        fields = ('id', 'author', 'content', 'comments', 'created_at')
 
     def create(self, validated_data):
         request = self.context['request']
