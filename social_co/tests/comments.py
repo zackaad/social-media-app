@@ -16,7 +16,8 @@ class TestCommentViewSet(APITestCase):
         )
 
         self.post = Post.objects.create(content="Test post 1", author=self.user)
-        self.client.force_login(self.user)  # Force login the user
+        self.client.force_login(self.user)
+
 
     def test_comment_creation(self):
         data = {

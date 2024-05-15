@@ -5,4 +5,8 @@ from django.db import models
 # Create your models here.
 
 class Profile(AbstractUser):
-    pass
+    #USERNAME_FIELD = 'email'
+
+
+    REQUIRED_FIELDS = []
+

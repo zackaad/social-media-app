@@ -1,9 +1,10 @@
-from django.contrib import admin
-from django.urls import path, include
-from social_auth.views.auth import SignupView, UserLogin, UserLogout
+from django.urls import path
+
+from .views.auth import CustomUserCreate, HelloWorldView, LogoutAndBlacklistRefreshTokenForUserView
+
 
 urlpatterns = [
-    path('register/', SignupView.as_view(), name='example'),
-    path('login/', UserLogin.as_view(), name='login'),
-    path('logout/', UserLogout.as_view(), name='logout'),
+    path('create/', CustomUserCreate.as_view(), name="create_user"),
+    path('hello/', HelloWorldView.as_view(), name='hello_world'),
+    path('blacklist/', LogoutAndBlacklistRefreshTokenForUserView.as_view(), name="blacklist")
 ]

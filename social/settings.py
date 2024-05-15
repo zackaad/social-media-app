@@ -1,4 +1,6 @@
 from pathlib import Path
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,26 +30,55 @@ INSTALLED_APPS = [
     "social_auth",
     "rest_framework",
     "social_co",
-    "corsheaders"
+    "corsheaders",
+    'rest_framework.authtoken',
+    'rest_framework_jwt',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
 
     'AUTHENTICATION_BACKENDS': [
-        'django.contrib.auth.backends.ModelBackend',
+        'django.contrib.auth.backends.ModelBackend(USERNAME_FIELD="username")',
 
-    ]
+    ],
 
+
+
+
+
+#
 
 
 }
+
+
+SIMPLE_JWT = {
+    # It will work instead of the default serializer(TokenObtainPairSerializer).
+    'UPDATE_LAST_LOGIN': True,  # TODO Throttle DRF. See docs warning.
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME:' : timedelta(days=14),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True
+}
+
+
+REST_USE_JWT = True
+
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
 
 
 CORS_ALLOW_CREDENTIALS = True
@@ -61,15 +92,21 @@ AUTH_USER_MODEL = 'social_auth.Profile'  # Replace with your app and model name
 
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'corsheaders.middleware.CorsMiddleware'
 ]
+
+#CSRF_COOKIE_SAMESITE = 'Strict'
+#SESSION_COOKIE_SAMESITE = 'Strict'
+#CSRF_COOKIE_HTTPONLY = False
+#SESSION_COOKIE_HTTPONLY = True
 
 ROOT_URLCONF = "social.urls"
 

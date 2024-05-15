@@ -5,6 +5,7 @@ from rest_framework import status
 from social_auth.models import Profile
 from social_co.models import Post
 from social_co.serializers.posts import PostSerializer
+from rest_framework import status, permissions
 
 
 class PostListViewSetTest(TestCase):
@@ -20,7 +21,6 @@ class PostListViewSetTest(TestCase):
 
     def test_posts_list(self):
         response = self.client.get("/feed/posts/")
-
         self.assertEqual(response.status_code, 200)
 
     def test_posts_list_unauthenticated(self):
@@ -31,6 +31,7 @@ class PostListViewSetTest(TestCase):
         self.assertEqual(response.status_code, 403, response.content)
 
     def test_post_creation_successful(self):
+
         data = {
             "content": "Test content",
             "post_id": 3,
@@ -39,7 +40,7 @@ class PostListViewSetTest(TestCase):
 
         http_response = self.client.post("/feed/posts/", data=data, format="json")
 
-        self.assertEqual(http_response.status_code, 201)
+        self.assertEqual(http_response.status_code, 201, http_response.content_type)
 
         response = http_response.json()
 

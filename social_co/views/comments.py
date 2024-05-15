@@ -9,7 +9,6 @@ from social_co.serializers.comments import CommentSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
 

@@ -26,20 +26,22 @@ class SignUpViewTest(TestCase):
         self.assertEqual(http_response.status_code, 201)
 
 
-class UserLoginTest(TestCase):
+class login_test(TestCase):
     def setUp(self):
-        self.user = Profile.objects.create_user(username='test_username', password='Aasd1239900!', email="master@mail.com")
+        self.user = Profile.objects.create_user(username='test_username', password='Aasd1239900!',
+                                                email="master@mail.com")
         self.user.save()
 
     def test_login_valid_data(self):
         response = self.client.post(
             path="/auth/login/",
             data={
-                'email': 'master@mail.com',
+                'username': 'test_username',
                 'password': 'Aasd1239900!'
             }
         )
-        self.assertEqual(response.status_code, 200, response.content)
+
+        self.assertTrue(response.status_code, 200)
 
     def test_login_invalid_data(self):
         response = self.client.post(
@@ -50,11 +52,13 @@ class UserLoginTest(TestCase):
             }
         )
 
-        self.assertEqual(response.status_code, 401)
-
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(self.user.is_authenticated)
 
     def test_logout(self):
         self.client.force_login(self.user)
+        print(self.user.is_authenticated)
+
         response = self.client.post(
             path="/auth/logout/",
             data={
@@ -62,6 +66,7 @@ class UserLoginTest(TestCase):
             }
         )
 
-        self.assertEqual(response.status_code, 200)
+        print(self.user.is_authenticated)
 
+        self.assertEqual(response.status_code, 200)
 

@@ -5,8 +5,11 @@ from django.utils import timezone  # Import timezone for default now value
 
 class Post(models.Model):
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    title = models.CharField(max_length=30, default=None, blank=True, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)  # New field
+
+
 
 
 class Comment(models.Model):
