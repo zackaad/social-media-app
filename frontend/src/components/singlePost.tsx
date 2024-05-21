@@ -2,7 +2,14 @@ import React, {useState, useEffect, FormEvent} from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from "../actions/axiosApi";
 import { Card, CardContent, Typography, List, ListItem, ListItemText, TextField, Button } from '@mui/material';
+import {json} from "node:stream/consumers";
 
+
+interface User {
+    id: number;
+    username: string;
+    email: string;
+}
 
 
 
@@ -16,13 +23,12 @@ interface Post {
 interface Comment {
     id: number; // Assuming comment has an ID
     content: string;
-    // Add any other properties as needed based on your API response
+    author: User;
 }
 
 interface NewComment{
     post: string | undefined;
     content: string;
-    author: string
 }
 
 
@@ -32,11 +38,34 @@ const SinglePost: React.FC = () => {
     const [postDetails, setPostDetails] = useState<Post | null>(null);
     const access_token = localStorage.getItem("access_token")
     const [comments, setComments] = useState<Comment[]>([]); // State for fetched comments
+    const [user, setUser] = useState<User | null>(null);
     const [newComment, setNewComment] = useState<NewComment>({
         post: postId,
-        content: '',
-        author: "1",
+        content: ''
+
     });
+
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [isLoading, setIsLoading] = useState(false); // State for loading indicator
+    const [error, setError] = useState<Error | null>(null); // State for error
+
+
+    const fetchUserData = async () => {
+        try {
+            const whoamiResponse = await axiosInstance.get<User>(
+                "http://localhost:8000/auth/whoami/",
+                {
+                    headers: {
+                        Authorization: `Bearer ${access_token}`, // Include access token in headers
+                    },
+                }
+            );
+            setUser(whoamiResponse.data)
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+        }
+
+    };
 
 
 
@@ -49,56 +78,69 @@ const SinglePost: React.FC = () => {
 
     const handleSubmitComment = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent default form submission behavior
-
         const access_token = localStorage.getItem("access_token");
 
-
         try {
-            console.log("Trying to post to post number" + postId)
-            const response = await axiosInstance.post<Comment>( // Replace with your actual comment creation endpoint
-                `http://localhost:8000/feed/comments/`,
-                newComment,
-                {
+            const response = await axiosInstance.post<Comment>(
+                'http://localhost:8000/feed/comments/',
+                newComment, {
                     headers: {
                         Authorization: `Bearer ${access_token}`
                     }
                 }
-
             );
-            setComments([...comments, response.data]); // Update comments state with new comment
+            console.log('Comment created successfully:', response.data);
+            setComments([...comments, response.data]);
         } catch (error) {
-            console.error('Error submitting comment:', error);
-            console.log(newComment)
-            // Handle submission errors (e.g., display error message to the user)
+            console.error('Error creating post:', error);
+            // Handle errors appropriately, e.g., display error message to the user
+        }
+    };
+
+    const fetchPostDetailsAndComments = async () => {
+        setIsLoading(true);
+
+        try {
+            const response = await axiosInstance.get<Post>(
+                `http://localhost:8000/feed/posts/${postId}/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    },
+                }
+            );
+            setPostDetails(response.data);
+
+            const commentsResponse = await axiosInstance.get<Comment[]>(
+                `http://localhost:8000/feed/posts/${postId}/comments/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                    },
+                }
+            );
+            setComments(commentsResponse.data);
+
+        } catch (error) {
+            console.error("Error fetching post details:", error);
+            setError(error as Error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
 
     useEffect(() => {
-        const fetchPostDetails = async () => {
+        const fetchData = async () => {
+            await fetchUserData();
+            await fetchPostDetailsAndComments()
 
-            try {
-                const response = await axiosInstance.get<Post>(
-                    `http://localhost:8000/feed/posts/${postId}/`, {
-                        headers: {
-                            Authorization: `Bearer ${access_token}` // Include access token in headers
-                        }
-                    }
-                );
-                setPostDetails(response.data);
 
-                const commentsResponse = await axiosInstance.get<Comment[]>(`http://localhost:8000/feed/posts/${postId}/comments/`, {
-                    headers: {
-                        Authorization: `Bearer ${access_token}` // Include access token in headers
-                    }
-                });
-                setComments(commentsResponse.data);
-            } catch (error) {
-                console.error("Error fetching post details:", error);
-            }
         };
-        fetchPostDetails();
+
+        fetchData();
     }, [postId]); // Re-run effect when postId changes
+
 
     return (
         <Card>
@@ -111,7 +153,7 @@ const SinglePost: React.FC = () => {
                     <List dense={false}>
                         {comments.map((comment) => (
                             <ListItem key={comment.id}>
-                                <ListItemText primary={comment.content} />
+                                <ListItemText primary={comment.author.username + " : " + comment.content} />
                             </ListItem>
                         ))}
                     </List>

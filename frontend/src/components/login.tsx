@@ -1,5 +1,7 @@
 import React, {Component, ChangeEvent, FormEvent, useState} from "react";
 import axiosInstance from "../actions/axiosApi";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 interface LoginFormState {
     username: string;
@@ -44,7 +46,7 @@ function Login() {
             localStorage.setItem('access_token', data.access);
             localStorage.setItem('refresh_token', data.refresh);
 
-            window.location.href = "/home";
+            window.location.href = "/posts";
         } catch (error: any) {
             console.error('Error during login:', error);
             // Handle login error appropriately (e.g., display error message)
@@ -52,33 +54,32 @@ function Login() {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Username:
-                    <input
-                        name="username"
-                        type="text"
-                        value={loginFormState.username}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Password:
-                    <input
-                        name="password"
-                        type="password"
-                        value={loginFormState.password}
-                        onChange={handleChange}
-                    />
-                </label>
-                <input type="submit" value="Submit" />
-            </form>
-        </div>
+        <form onSubmit={handleSubmit}>
+            <TextField
+                label="Username"
+                variant="outlined"
+                name="username"
+                value={loginFormState.username}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+            />
+            <TextField
+                label="Password"
+                variant="outlined"
+                name="password"
+                type="password"
+                value={loginFormState.password}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+            />
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+                Login
+            </Button>
+        </form>
     );
 };
-
-
 
 
 export default Login;

@@ -1,5 +1,7 @@
 import React, {Component, ChangeEvent, FormEvent, useState} from "react";
 import axiosInstance from "../actions/axiosApi";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 interface SignUpFormState {
     username: string;
@@ -52,38 +54,40 @@ function Signup() {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Username:
-                    <input
-                        name="username"
-                        type="text"
-                        value={signUpFormState.username}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Email:
-                    <input
-                        name="email"
-                        type="email"
-                        value={signUpFormState.email}
-                        onChange={handleChange}
-                    />
-                </label>
-                <label>
-                    Password:
-                    <input
-                        name="password"
-                        type="password"
-                        value={signUpFormState.password}
-                        onChange={handleChange}
-                    />
-                </label>
-                <input type="submit" value="Submit"/>
-            </form>
-        </div>
+        <form onSubmit={handleSubmit}>
+            <TextField
+                label="Username"
+                variant="outlined"
+                name="username"
+                value={signUpFormState.username}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+            />
+            <TextField
+                label="Email"
+                variant="outlined"
+                name="email"
+                type="email"
+                value={signUpFormState.email}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+            />
+            <TextField
+                label="Password"
+                variant="outlined"
+                name="password"
+                type="password"
+                value={signUpFormState.password}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+            />
+            <Button type="submit" variant="contained" color="primary" fullWidth>
+                Signup
+            </Button>
+        </form>
     );
 };
 

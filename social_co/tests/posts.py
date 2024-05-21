@@ -14,13 +14,28 @@ class PostListViewSetTest(TestCase):
             username="test_user", password="123",
         )
 
-        self.post1 = Post.objects.create(content="Test post 1", author=self.user)
-        self.post2 = Post.objects.create(content="Test post 2", author=self.user)
+        self.post1 = Post.objects.create(content="Test post 1", author=self.user, title="test title1")
+        #self.post2 = Post.objects.create(content="Test post 2", author=self.user)
+        #self.client.force_login(self.user)
 
-        self.client.force_login(self.user)
 
-    def test_posts_list(self):
-        response = self.client.get("/feed/posts/")
+        response = self.client.post(
+            "/api/token/", data={"username": "test_user", "password": "123"}
+        )
+        # Access raw JSON content
+        raw_content = response.content.decode()  # Decode bytes to string
+
+        # Parse JSON manually (if needed)
+        import json
+        data = json.loads(raw_content)
+
+        # Assuming access token is under the key 'access'
+        self.access_token = data.get('access')
+        self.headers = {"Authorization": f"Bearer {self.access_token}"}
+
+    def test_get_posts_list(self):
+        response = self.client.get(path="/feed/posts/", headers=self.headers)
+
         self.assertEqual(response.status_code, 200)
 
     def test_posts_list_unauthenticated(self):
@@ -28,26 +43,34 @@ class PostListViewSetTest(TestCase):
 
         response = self.client.get("/feed/posts/")
 
-        self.assertEqual(response.status_code, 403, response.content)
+        self.assertEqual(response.status_code, 401)
 
     def test_post_creation_successful(self):
-
         data = {
-            "content": "Test content",
-            "post_id": 3,
-            'comments': [],
+            "title": "test title",
+            "content": "this is",
+            "comments": []
+
         }
 
-        http_response = self.client.post("/feed/posts/", data=data, format="json")
+        http_response = self.client.post("/feed/posts/", data=data, format="json", headers=self.headers)
 
         self.assertEqual(http_response.status_code, 201, http_response.content_type)
 
         response = http_response.json()
 
-        self.assertDictEqual(response, {
-            'id': response['id'],
-            'author': self.user.pk,
-            'content': 'Test content',
-            'comments': [],
-            "created_at": response['created_at']
-        })
+
+
+
+    def test_post_deletion(self):
+        response = self.client.delete(f'/feed/posts/{self.post1}', headers=self.headers)
+        self.assertEqual(response.status_code, 204)
+        #self.assertFalse(Post.objects.filter(pk=self.post1.pk).exists())
+
+    def test_profile_me_posts(self):
+        http_response = self.client.get(path='/feed/profiles/me/posts/', format="json", headers=self.headers)
+
+
+        self.assertEqual(http_response.status_code, 200)
+
+

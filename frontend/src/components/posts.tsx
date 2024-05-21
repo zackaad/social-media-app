@@ -8,7 +8,14 @@ export interface Post {
     id: number;
     title: string;
     content: string;
-    // Add any other properties as needed based on your API response
+    author: User;
+
+}
+
+interface User {
+    id: number;
+    username: string;
+    email: string;
 }
 
 
@@ -70,7 +77,10 @@ const Posts: React.FC = () => {
             <List dense={false}>
                 {posts.map((post) => (
                     <ListItem key={post.id} button component={Link} to={`/posts/${post.id}`}>
-                        <ListItemText primary={post.title} secondary={post.content} />
+                        <ListItemText
+                            primary={post.title + " by " + post.author.username}
+                            secondary={post.content.slice(0, 100) + (post.content.length > 100 ? "..." : "")}
+                        />
                         <ListItemSecondaryAction>
                             {/* Add any additional actions for the post here (optional) */}
                         </ListItemSecondaryAction>

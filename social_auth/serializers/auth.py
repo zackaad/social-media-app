@@ -9,8 +9,8 @@ from social_auth.models import Profile
 
 class ProfileSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    username = serializers.CharField(write_only=False)
-    email = serializers.CharField(write_only=False)
+    username = serializers.CharField()
+    email = serializers.CharField()
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
@@ -22,8 +22,13 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('username', 'email', 'password')
+        fields = ('id', 'username', 'email', 'password')
 
+
+class CurrentUserSerializer(serializers.Serializer):
+    username = serializers.CharField()  # Use get_username method
+    email = serializers.CharField()  # Use field name with underscore
+    id = serializers.CharField()
 
 
 class UserLoginSerializer(serializers.Serializer):
