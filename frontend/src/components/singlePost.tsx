@@ -18,6 +18,7 @@ interface Post {
     title: string;
     content: string;
     comments: string[];
+    author: User;
 }
 
 interface Comment {
@@ -62,7 +63,7 @@ const SinglePost: React.FC = () => {
             );
             setUser(whoamiResponse.data)
         } catch (error) {
-            console.error("Error fetching user data:", error);
+            console.error("Error fetching user data. Not logged in");
         }
 
     };
@@ -91,6 +92,11 @@ const SinglePost: React.FC = () => {
             );
             console.log('Comment created successfully:', response.data);
             setComments([...comments, response.data]);
+            setNewComment({ post: postId, content: '' });
+
+
+
+
         } catch (error) {
             console.error('Error creating post:', error);
             // Handle errors appropriately, e.g., display error message to the user
@@ -146,7 +152,7 @@ const SinglePost: React.FC = () => {
         <Card>
             {postDetails ? (
                 <CardContent>
-                    <Typography variant="h5">{postDetails.title}</Typography>
+                    <Typography variant="h5">{postDetails.title + " by " + postDetails.author.username}</Typography>
                     <Typography variant="body1">{postDetails.content}</Typography>
 
                     <h3>Comments</h3>

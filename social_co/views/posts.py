@@ -16,6 +16,7 @@ class PostViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()

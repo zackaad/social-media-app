@@ -68,7 +68,7 @@ const Posts: React.FC = () => {
     }
 
     if (error) {
-        return <p>Error: {error.message}</p>;
+        return <p>Error: You are not logged in</p>;
     }
 
     return (

@@ -29,7 +29,11 @@ const App: React.FC = () => {
 
     return (
         <div className="site">
-            <nav style={{display: 'flex', justifyContent: 'space-between', padding: '10px 20px'}}>
+            <nav style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                padding: '10px 20px',
+            }}>
                 <Link className={"nav-link"} to="/">Home</Link>
                 <Link className={"nav-link"} to="/login">Login</Link>
                 <Link className={"nav-link"} to="/signup">Signup</Link>
@@ -38,15 +42,16 @@ const App: React.FC = () => {
                 <Link className={"nav-link"} to="/create_post">Create post</Link>
                 <Button variant="contained" color="primary" onClick={handleLogout}>Logout</Button>
             </nav>
+
             <main>
                 <Routes>
-                    <Route path="/login/" element={<Login />} />
-                    <Route path="/signup/" element={<Signup />} />
-                    <Route path="/posts/" element={<Posts />} />
-                    <Route path="/self/" element={<Profile />} />
-                    <Route path="/create_post/" element={<CreatePost />} />
-                    <Route path="/" element={<h1>Welcome!</h1>} />
-                    <Route path="/posts/:postId" element={<SinglePost />} />
+                    <Route path="/login/" element={<Login/>}/>
+                    <Route path="/signup/" element={<Signup/>}/>
+                    <Route path="/posts/" element={<Posts/>}/>
+                    <Route path="/self/" element={<Profile/>}/>
+                    <Route path="/create_post/" element={<CreatePost/>}/>
+                    <Route path="/" element={<h1>Welcome!</h1>}/>
+                    <Route path="/posts/:postId" element={<SinglePost/>}/>
                 </Routes>
             </main>
         </div>

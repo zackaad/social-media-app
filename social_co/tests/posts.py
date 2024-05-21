@@ -22,14 +22,14 @@ class PostListViewSetTest(TestCase):
         response = self.client.post(
             "/api/token/", data={"username": "test_user", "password": "123"}
         )
-        # Access raw JSON content
+
         raw_content = response.content.decode()  # Decode bytes to string
 
-        # Parse JSON manually (if needed)
+
         import json
         data = json.loads(raw_content)
 
-        # Assuming access token is under the key 'access'
+
         self.access_token = data.get('access')
         self.headers = {"Authorization": f"Bearer {self.access_token}"}
 
@@ -71,6 +71,10 @@ class PostListViewSetTest(TestCase):
         http_response = self.client.get(path='/feed/profiles/me/posts/', format="json", headers=self.headers)
 
 
+        self.assertEqual(http_response.status_code, 200)
+
+    def test_get_creation_view(self):
+        http_response = self.client.get(path='/feed/posts/', headers=self.headers)
         self.assertEqual(http_response.status_code, 200)
 
 

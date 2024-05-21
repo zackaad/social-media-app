@@ -75,7 +75,7 @@ class login_test(TestCase):
         self.assertEqual(response_logout.status_code, 205)
 
     def test_whoami(self):
-        data = {'user_id': self.user.id}
-        response = self.client.post('/auth/whoami/', data=data, content_type='application/json')
+
+        response = self.client.get('/auth/whoami/', content_type='application/json', headers=self.headers)
 
         self.assertEqual(response.status_code, 200)
